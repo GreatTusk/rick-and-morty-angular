@@ -4,12 +4,14 @@ import {AsyncPipe} from '@angular/common';
 import {Observable} from 'rxjs';
 import {CharacterService} from '../../data/character-service';
 import {CharacterGrid} from './components/character-grid/character-grid';
+import {SearchBar} from './components/search-bar/search-bar';
 
 @Component({
   selector: 'app-home',
   imports: [
     AsyncPipe,
-    CharacterGrid
+    CharacterGrid,
+    SearchBar
   ],
   templateUrl: './home.html',
   styleUrl: './home.css'
