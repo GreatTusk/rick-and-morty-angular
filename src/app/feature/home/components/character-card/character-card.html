@@ -6,7 +6,7 @@
       <mat-chip [highlighted]="true">
         {{ character().species }}
       </mat-chip>
-      {{ character().state }}
+      <app-character-status-icon [characterState]="character().state" />
     </div>
   </mat-card-content>
 </mat-card>
