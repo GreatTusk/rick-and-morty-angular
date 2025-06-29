@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, output} from '@angular/core';
 import {MatFormField, MatSuffix} from '@angular/material/form-field';
 import {MatInput, MatLabel} from '@angular/material/input';
 import {MatIcon} from '@angular/material/icon';
@@ -21,6 +21,8 @@ import {FormControl, FormGroup, ReactiveFormsModule} from '@angular/forms';
   styleUrl: './search-bar.css'
 })
 export class SearchBar {
+  searchData = output<{ name: string, status: string, gender: string }>()
+
   searchForm = new FormGroup({
     name: new FormControl(""),
     status: new FormControl(""),
@@ -28,6 +30,10 @@ export class SearchBar {
   })
 
   search() {
-    console.log(this.searchForm.value.name);
+    this.searchData.emit({
+      name: this.searchForm.value.name ?? "",
+      status: this.searchForm.value.status ?? "",
+      gender: this.searchForm.value.gender ?? ""
+    })
   }
 }

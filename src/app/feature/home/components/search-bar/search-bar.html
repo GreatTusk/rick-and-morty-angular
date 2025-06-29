@@ -2,7 +2,7 @@
   <form [formGroup]="searchForm">
     <mat-form-field appearance="outline" class="search-bar">
       <mat-label>Search</mat-label>
-      <input matInput placeholder="Rick" formControlName="name">
+      <input matInput placeholder="Rick" formControlName="name" (input)="search()">
       <mat-icon matSuffix>search</mat-icon>
     </mat-form-field>
 
