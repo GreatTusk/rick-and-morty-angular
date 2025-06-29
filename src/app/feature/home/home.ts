@@ -16,7 +16,7 @@ export class Home {
     id: 1,
     name: "Rick Sanchez",
     species: "Human",
-    state: CharacterState.DEAD,
+    state: CharacterState.ALIVE,
     imgUrl: "https://rickandmortyapi.com/api/character/avatar/1.jpeg"
   };
 }

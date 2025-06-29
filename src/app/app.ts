@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
 import {Home} from './feature/home/home';
+import {MatIconRegistry} from '@angular/material/icon';
 
 @Component({
   selector: 'app-root',
@@ -10,4 +10,8 @@ import {Home} from './feature/home/home';
 })
 export class App {
   protected title = 'rick-and-morty-angular';
+
+  constructor(private iconRegistry: MatIconRegistry) {
+    this.iconRegistry.setDefaultFontSetClass("material-symbols");
+  }
 }
