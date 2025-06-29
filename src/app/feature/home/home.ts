@@ -1,11 +1,14 @@
 import {Component, inject} from '@angular/core';
 import {Character} from '../../domain/character';
 import {AsyncPipe, NgOptimizedImage} from '@angular/common';
-import {BehaviorSubject, catchError, map, Observable, startWith, switchMap} from 'rxjs';
+import {BehaviorSubject, catchError, combineLatest, map, Observable, startWith, switchMap} from 'rxjs';
 import {CharacterService} from '../../data/character-service';
 import {CharacterGrid} from './components/character-grid/character-grid';
 import {SearchBar} from './components/search-bar/search-bar';
 import {SearchFilters} from '../../domain/search-filters';
+import {MatProgressSpinner} from '@angular/material/progress-spinner';
+import {MatIcon} from '@angular/material/icon';
+import {MatButton} from '@angular/material/button';
 
 interface AppState {
   characters: Character[];
@@ -19,7 +22,10 @@ interface AppState {
     AsyncPipe,
     CharacterGrid,
     SearchBar,
-    NgOptimizedImage
+    NgOptimizedImage,
+    MatProgressSpinner,
+    MatIcon,
+    MatButton
   ],
   templateUrl: './home.html',
   styleUrl: './home.css'
@@ -32,6 +38,8 @@ export class Home {
     status: '',
     gender: ''
   });
+
+  page$ = new BehaviorSubject(1)
 
   state$: Observable<AppState> = this.searchFilters$.pipe(
     switchMap(filters =>
@@ -46,11 +54,14 @@ export class Home {
           loading: true,
           error: null
         }),
-        catchError(error => [{
-          characters: [],
-          loading: false,
-          error: error.message
-        }])
+        catchError(error => {
+          const errorMessage = error.status === 404 ? "No characters found." : "Something went wrong.";
+          return [{
+            characters: [],
+            loading: false,
+            error: errorMessage
+          }];
+        })
       )
     )
   )

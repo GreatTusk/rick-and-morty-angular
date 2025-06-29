@@ -13,7 +13,7 @@ export class CharacterService {
   private httpClient = inject(HttpClient);
 
   getCharacters(filters: SearchFilters, page: number): Observable<Character[]> {
-    let params = new HttpParams().set("name", filters.name);
+    let params = new HttpParams().set("name", filters.name).set("page", page);
 
     if (filters.gender !== "") {
       params = params.append("gender", filters.gender);

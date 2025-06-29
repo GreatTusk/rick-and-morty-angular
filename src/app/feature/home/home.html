@@ -2,7 +2,25 @@
   <img ngSrc="Rick_and_Morty.svg" width="1000" height="305"/>
 </header>
 <main>
-  <app-search-bar/>
+  <app-search-bar (searchFilters)="onSearch($event)"/>
+
+  @if (loading$ | async) {
+    <div class="loading-container">
+      <mat-spinner diameter="50"></mat-spinner>
+      <p>Searching for characters...</p>
+    </div>
+  }
+
+  @if (error$ | async; as error) {
+    <div class="loading-container">
+      <mat-icon color="warn">error</mat-icon>
+      <h3>Oops! Something went wrong</h3>
+      <p>{{ error }}</p>
+      <button matButton color="primary" (click)="onSearch({name: '', status: '', gender: ''})">
+        Try Again
+      </button>
+    </div>
+  }
 
   @if (characters$ | async; as characters) {
     <app-character-grid [characters]="characters"/>
