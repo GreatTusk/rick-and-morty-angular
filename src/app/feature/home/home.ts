@@ -1,22 +1,26 @@
-import {Component} from '@angular/core';
-import {CharacterState} from '../../domain/character-state';
+import {Component, effect, inject} from '@angular/core';
 import {Character} from '../../domain/character';
-import {CharacterCard} from './components/character-card/character-card';
+import {AsyncPipe} from '@angular/common';
+import {Observable} from 'rxjs';
+import {CharacterService} from '../../data/character-service';
+import {CharacterGrid} from './components/character-grid/character-grid';
 
 @Component({
   selector: 'app-home',
   imports: [
-    CharacterCard
+    AsyncPipe,
+    CharacterGrid
   ],
   templateUrl: './home.html',
   styleUrl: './home.css'
 })
 export class Home {
-  testCharacter: Character = {
-    id: 1,
-    name: "Rick Sanchez",
-    species: "Human",
-    state: CharacterState.ALIVE,
-    imgUrl: "https://rickandmortyapi.com/api/character/avatar/1.jpeg"
-  };
+  private characterService = inject(CharacterService);
+  characters$!: Observable<Character[]>;
+
+  constructor() {
+    effect(() => {
+      this.characters$ = this.characterService.getCharacters();
+    });
+  }
 }

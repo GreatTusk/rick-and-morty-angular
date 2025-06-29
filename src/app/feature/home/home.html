@@ -1,3 +1,5 @@
 <main>
-  <app-character-card [character]="testCharacter"/>
+  @if (characters$ | async; as characters) {
+    <app-character-grid [characters]="characters"/>
+  }
 </main>
