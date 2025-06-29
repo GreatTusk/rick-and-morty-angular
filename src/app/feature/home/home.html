@@ -5,24 +5,26 @@
   <app-search-bar (searchFilters)="onSearch($event)"/>
 
   @if (loading$ | async) {
-    <div class="loading-container">
+    <div class="status-container">
       <mat-spinner diameter="50"></mat-spinner>
       <p>Searching for characters...</p>
     </div>
+  } @else {
+
+    @if (error$ | async; as error) {
+      <div class="status-container">
+        <mat-icon color="warn">error</mat-icon>
+        <h3>Oops! Something went wrong</h3>
+        <p>{{ error }}</p>
+        <button matButton (click)="onSearch({name: '', status: '', gender: ''})">
+          Try Again
+        </button>
+      </div>
+    }
+
+    @if (characters$ | async; as characters) {
+      <app-character-grid [characters]="characters"/>
+    }
   }
 
-  @if (error$ | async; as error) {
-    <div class="loading-container">
-      <mat-icon color="warn">error</mat-icon>
-      <h3>Oops! Something went wrong</h3>
-      <p>{{ error }}</p>
-      <button matButton color="primary" (click)="onSearch({name: '', status: '', gender: ''})">
-        Try Again
-      </button>
-    </div>
-  }
-
-  @if (characters$ | async; as characters) {
-    <app-character-grid [characters]="characters"/>
-  }
 </main>

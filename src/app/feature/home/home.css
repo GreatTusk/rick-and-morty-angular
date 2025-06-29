@@ -27,7 +27,7 @@ main {
   gap: 1rem;
 }
 
-.loading-container {
+.status-container {
   display: flex;
   flex-direction: column;
   justify-content: center;
