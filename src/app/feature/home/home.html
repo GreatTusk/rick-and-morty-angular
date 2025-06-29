@@ -3,6 +3,7 @@
 </header>
 <main>
   <app-search-bar/>
+
   @if (characters$ | async; as characters) {
     <app-character-grid [characters]="characters"/>
   }

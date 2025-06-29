@@ -4,6 +4,7 @@ import {MatInput, MatLabel} from '@angular/material/input';
 import {MatIcon} from '@angular/material/icon';
 import {MatOption, MatSelect} from '@angular/material/select';
 import {FormControl, FormGroup, ReactiveFormsModule} from '@angular/forms';
+import {SearchFilters} from '../../../../domain/search-filters';
 
 @Component({
   selector: 'app-search-bar',
@@ -21,19 +22,21 @@ import {FormControl, FormGroup, ReactiveFormsModule} from '@angular/forms';
   styleUrl: './search-bar.css'
 })
 export class SearchBar {
-  searchData = output<{ name: string, status: string, gender: string }>()
+  searchFilters = output<SearchFilters>();
 
   searchForm = new FormGroup({
     name: new FormControl(""),
     status: new FormControl(""),
     gender: new FormControl(""),
-  })
+  });
 
   search() {
-    this.searchData.emit({
-      name: this.searchForm.value.name ?? "",
-      status: this.searchForm.value.status ?? "",
-      gender: this.searchForm.value.gender ?? ""
-    })
+    const filters: SearchFilters = {
+      name: this.searchForm.value.name || '',
+      status: this.searchForm.value.status || '',
+      gender: this.searchForm.value.gender || ''
+    };
+
+    this.searchFilters.emit(filters);
   }
 }
