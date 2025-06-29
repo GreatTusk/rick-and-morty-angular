@@ -1,6 +1,6 @@
 import {Component, effect, inject} from '@angular/core';
 import {Character} from '../../domain/character';
-import {AsyncPipe} from '@angular/common';
+import {AsyncPipe, NgOptimizedImage} from '@angular/common';
 import {Observable} from 'rxjs';
 import {CharacterService} from '../../data/character-service';
 import {CharacterGrid} from './components/character-grid/character-grid';
@@ -11,7 +11,8 @@ import {SearchBar} from './components/search-bar/search-bar';
   imports: [
     AsyncPipe,
     CharacterGrid,
-    SearchBar
+    SearchBar,
+    NgOptimizedImage
   ],
   templateUrl: './home.html',
   styleUrl: './home.css'
