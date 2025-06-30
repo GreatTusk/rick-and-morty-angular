@@ -35,6 +35,8 @@ jobs:
           app_location: "/" # App source code path
           api_location: "" # Api source code path - optional
           output_location: "dist/coreui-free-angular-admin-template" # Built app content directory - optional
+          app_build_command: "npm install -g @angular/cli && npm ci && npm run build"
+          node_version: "20"
           ###### End of Repository/Build Configurations ######
 
   close_pull_request_job:
