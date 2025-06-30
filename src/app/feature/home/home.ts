@@ -1,17 +1,16 @@
-import {Component, inject, signal} from '@angular/core';
+import {Component, computed, effect, inject, signal} from '@angular/core';
 import {Character} from '../../domain/character';
 import {AsyncPipe} from '@angular/common';
-import {BehaviorSubject, catchError, combineLatest, map, Observable, startWith, switchMap} from 'rxjs';
-import {toObservable} from '@angular/core/rxjs-interop';
 import {CharacterService} from '../../data/character-service';
 import {CharacterGrid} from './components/character-grid/character-grid';
 import {SearchBar} from './components/search-bar/search-bar';
-import {SearchFilters} from '../../domain/search-filters';
+import {emptySearchFilters, SearchFilters} from '../../domain/search-filters';
 import {MatProgressSpinner} from '@angular/material/progress-spinner';
 import {MatIcon} from '@angular/material/icon';
 import {MatButton} from '@angular/material/button';
 import {Paginator} from './components/paginator/paginator';
 import {PagingInfo} from '../../domain/character-results';
+import {map} from 'rxjs';
 
 interface AppState {
   characters: Character[];
@@ -37,55 +36,62 @@ interface AppState {
 export class Home {
   private characterService = inject(CharacterService);
 
-  private searchFilters$ = new BehaviorSubject<SearchFilters>({
-    name: '',
-    status: '',
-    gender: ''
+  protected searchFilters = signal<SearchFilters>(emptySearchFilters);
+  protected currentPage = signal(0);
+  protected appState = signal<AppState>({
+    characters: [],
+    loading: false,
+    error: null
   });
 
-  currentPage = signal(1);
-  private currentPage$ = toObservable(this.currentPage);
-
-  state$: Observable<AppState> = combineLatest([
-    this.searchFilters$,
-    this.currentPage$
-  ]).pipe(
-    switchMap(([filters, page]) =>
-      this.characterService.getCharacters(filters, page).pipe(
-        map(characterResponse => ({
-          characters: characterResponse.characters,
-          loading: false,
-          error: null,
-          pagingInfo: characterResponse.pagingInfo
-        })),
-        startWith({
-          characters: [],
-          loading: true,
-          error: null,
-        }),
-        catchError(error => {
-          const errorMessage = error.status === 404 ? "No characters found." : "Something went wrong.";
-          return [{
-            characters: [],
-            loading: false,
-            error: errorMessage,
-          }];
-        })
-      )
-    )
-  );
-
-  characters$ = this.state$.pipe(map(state => state.characters));
-  loading$ = this.state$.pipe(map(state => state.loading));
-  error$ = this.state$.pipe(map(state => state.error));
-  pagingInfo$ = this.state$.pipe(map(state => state.pagingInfo));
+  protected characters = computed(() => this.appState().characters);
+  protected pagingInfo = computed(() => this.appState().pagingInfo);
+  protected loading = computed(() => this.appState().loading);
+  protected error = computed(() => this.appState().error);
 
   onSearch(filters: SearchFilters) {
-    this.searchFilters$.next(filters);
-    this.currentPage.set(1);
+    this.searchFilters.set(filters);
+    this.currentPage.set(0);
   }
 
   handlePageChange(newPage: number) {
-    this.currentPage.set(newPage + 1);
+    this.currentPage.set(newPage);
   }
+
+  constructor() {
+    effect(() => {
+      const filters = this.searchFilters();
+      const page = this.currentPage() + 1;
+
+      // Set loading state
+      this.appState.update(state => ({
+        ...state,
+        loading: true,
+        error: null
+      }));
+
+      // Subscribe to the observable
+      const subscription = this.characterService.getCharacters(filters, page).subscribe({
+        next: (result) => {
+          this.appState.set({
+            characters: result.characters,
+            pagingInfo: result.pagingInfo,
+            loading: false,
+            error: null
+          });
+        },
+        error: (error) => {
+          this.appState.update(state => ({
+            ...state,
+            loading: false,
+            error: error.message || 'Failed to load characters'
+          }));
+        }
+      });
+
+      return () => subscription.unsubscribe();
+    });
+  }
+
+  protected readonly emptySearchFilters = emptySearchFilters;
 }

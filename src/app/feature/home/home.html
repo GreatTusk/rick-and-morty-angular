@@ -1,31 +1,33 @@
 <main>
   <app-search-bar (searchFilters)="onSearch($event)"/>
 
-  @if (loading$ | async) {
+  @if (loading()) {
     <div class="status-container">
       <mat-spinner diameter="50"></mat-spinner>
       <p>Searching for characters...</p>
     </div>
   } @else {
 
-    @if (error$ | async; as error) {
+    @let errorMessage = error();
+    @if (errorMessage) {
       <div class="status-container">
         <mat-icon color="warn">error</mat-icon>
         <h3>Oops! Something went wrong</h3>
-        <p>{{ error }}</p>
-        <button matButton (click)="onSearch({name: '', status: '', gender: ''})">
+        <p>{{ errorMessage }}</p>
+        <button matButton (click)="onSearch(emptySearchFilters)">
           Try Again
         </button>
       </div>
     }
 
-    @if (characters$ | async; as characters) {
-      <app-character-grid [characters]="characters"/>
+    @let character = characters();
+    @if (character) {
+      <app-character-grid [characters]="character"/>
     }
   }
 
-  @if (pagingInfo$ | async; as pagingInfo) {
-    <app-paginator [totalItems]="pagingInfo.count" (pageEvent)="handlePageChange($event)"/>
+  @let paging = pagingInfo();
+  @if (paging) {
+    <app-paginator [totalItems]="paging.count" (pageEvent)="handlePageChange($event)"/>
   }
-  {{ currentPage() }}
 </main>

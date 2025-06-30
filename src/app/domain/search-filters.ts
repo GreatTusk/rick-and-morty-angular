@@ -3,3 +3,9 @@ export interface SearchFilters {
   status: string;
   gender: string;
 }
+
+export const emptySearchFilters: SearchFilters = {
+  name: '',
+  status: '',
+  gender: ''
+}
