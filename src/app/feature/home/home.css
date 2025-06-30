@@ -1,4 +1,4 @@
-main, header {
+main {
   margin: 0 2rem;
 
   @media (min-width: 768px) {
@@ -10,15 +10,6 @@ main, header {
   @media (min-width: 1280px) {
     margin: 0 16rem;
   }
-}
-
-header img {
-  max-width: 60%;
-}
-
-header {
-  display: flex;
-  justify-content: center;
 }
 
 main {
