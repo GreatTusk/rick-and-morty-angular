@@ -10,7 +10,6 @@ import {MatIcon} from '@angular/material/icon';
 import {MatButton} from '@angular/material/button';
 import {Paginator} from './components/paginator/paginator';
 import {PagingInfo} from '../../domain/character-results';
-import {map} from 'rxjs';
 
 interface AppState {
   characters: Character[];
@@ -22,7 +21,6 @@ interface AppState {
 @Component({
   selector: 'app-home',
   imports: [
-    AsyncPipe,
     CharacterGrid,
     SearchBar,
     MatProgressSpinner,
@@ -44,10 +42,10 @@ export class Home {
     error: null
   });
 
-  protected characters = computed(() => this.appState().characters);
-  protected pagingInfo = computed(() => this.appState().pagingInfo);
-  protected loading = computed(() => this.appState().loading);
-  protected error = computed(() => this.appState().error);
+  protected characters$ = computed(() => this.appState().characters);
+  protected pagingInfo$ = computed(() => this.appState().pagingInfo);
+  protected loading$ = computed(() => this.appState().loading);
+  protected error$ = computed(() => this.appState().error);
 
   onSearch(filters: SearchFilters) {
     this.searchFilters.set(filters);
@@ -60,17 +58,16 @@ export class Home {
 
   constructor() {
     effect(() => {
+      console.log("Running the effect again!")
       const filters = this.searchFilters();
       const page = this.currentPage() + 1;
 
-      // Set loading state
       this.appState.update(state => ({
         ...state,
         loading: true,
         error: null
       }));
 
-      // Subscribe to the observable
       const subscription = this.characterService.getCharacters(filters, page).subscribe({
         next: (result) => {
           this.appState.set({
@@ -81,11 +78,13 @@ export class Home {
           });
         },
         error: (error) => {
-          this.appState.update(state => ({
-            ...state,
+          const errorMessage = error.status === 404 ? "No characters found." : "Something went wrong.";
+
+          this.appState.set({
+            characters: [],
             loading: false,
-            error: error.message || 'Failed to load characters'
-          }));
+            error: errorMessage,
+          });
         }
       });
 

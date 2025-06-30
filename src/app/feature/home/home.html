@@ -1,33 +1,30 @@
 <main>
   <app-search-bar (searchFilters)="onSearch($event)"/>
 
-  @if (loading()) {
+  @let loading = loading$();
+  @let character = characters$();
+  @let errorMessage = error$();
+
+  @if (loading) {
     <div class="status-container">
       <mat-spinner diameter="50"></mat-spinner>
       <p>Searching for characters...</p>
     </div>
-  } @else {
-
-    @let errorMessage = error();
-    @if (errorMessage) {
-      <div class="status-container">
-        <mat-icon color="warn">error</mat-icon>
-        <h3>Oops! Something went wrong</h3>
-        <p>{{ errorMessage }}</p>
-        <button matButton (click)="onSearch(emptySearchFilters)">
-          Try Again
-        </button>
-      </div>
-    }
-
-    @let character = characters();
-    @if (character) {
-      <app-character-grid [characters]="character"/>
-    }
+  } @else if (errorMessage) {
+    <div class="status-container">
+      <mat-icon color="warn">error</mat-icon>
+      <h3>Oops! Something went wrong</h3>
+      <p>{{ errorMessage }}</p>
+      <button matButton (click)="onSearch(emptySearchFilters)">
+        Try Again
+      </button>
+    </div>
+  } @else if (character) {
+    <app-character-grid [characters]="character"/>
   }
 
-  @let paging = pagingInfo();
-  @if (paging) {
-    <app-paginator [totalItems]="paging.count" (pageEvent)="handlePageChange($event)"/>
+  @let pagingInfo = pagingInfo$();
+  @if (pagingInfo) {
+    <app-paginator [totalItems]="pagingInfo.count" (pageEvent)="handlePageChange($event)"/>
   }
 </main>
