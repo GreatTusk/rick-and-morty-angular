@@ -1,12 +1,13 @@
 <mat-card appearance="outlined">
-  <img [ngSrc]="character().imgUrl" width="300" height="300" matCardImage/>
+  @let char = character();
+  <img [ngSrc]="char.imgUrl" width="300" height="300" matCardImage/>
   <mat-card-content>
-    <h2>{{ character().name }}</h2>
+    <h2>{{ char.name }}</h2>
     <div class="row">
-      <mat-chip [highlighted]="true">
-        {{ character().species }}
+      <mat-chip highlighted="true">
+        {{ char.species }}
       </mat-chip>
-      <app-character-status-icon [characterState]="character().state" />
+      <app-character-status-icon [characterState]="char.state" />
     </div>
   </mat-card-content>
 </mat-card>

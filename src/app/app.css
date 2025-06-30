@@ -1,5 +1,7 @@
 header img {
   max-width: 60%;
+  max-height: 150px;
+  padding: 1.5rem 0;
 }
 
 header {

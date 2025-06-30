@@ -1,1 +1,5 @@
-<mat-paginator [length]="totalItems()" [pageSize]="pageSize" aria-label="Select page" (page)="handlePageEvent($event)"></mat-paginator>
+<mat-paginator [length]="totalItems()"
+               [pageSize]="pageSize"
+               aria-label="Select page"
+               (page)="handlePageEvent($event)"
+               [showFirstLastButtons]="true"></mat-paginator>
