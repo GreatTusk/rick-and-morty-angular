@@ -58,7 +58,6 @@ export class Home {
 
   constructor() {
     effect(() => {
-      console.log("Running the effect again!")
       const filters = this.searchFilters();
       const page = this.currentPage() + 1;
 

@@ -16,7 +16,6 @@ export class Paginator {
   pageSize = 20;
 
   handlePageEvent(pageEvent: PageEvent) {
-    console.log(pageEvent.pageIndex);
     this.pageEvent.emit(pageEvent.pageIndex);
   }
 }
