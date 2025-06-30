@@ -3,8 +3,8 @@ import {HttpClient, HttpParams} from '@angular/common/http';
 import {CharacterRequest} from './dto/character-request';
 import {map, Observable} from 'rxjs';
 import {toCharacterDomain} from './mapper/character-mapper';
-import {Character} from '../domain/character';
 import {SearchFilters} from '../domain/search-filters';
+import {CharacterResults} from '../domain/character-results';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +12,7 @@ import {SearchFilters} from '../domain/search-filters';
 export class CharacterService {
   private httpClient = inject(HttpClient);
 
-  getCharacters(filters: SearchFilters, page: number): Observable<Character[]> {
+  getCharacters(filters: SearchFilters, page: number): Observable<CharacterResults> {
     let params = new HttpParams().set("name", filters.name).set("page", page);
 
     if (filters.gender !== "") {
@@ -26,7 +26,14 @@ export class CharacterService {
     return this.httpClient.get<CharacterRequest>("https://rickandmortyapi.com/api/character", {
       params: params
     })
-      .pipe(map(response => response.results))
-      .pipe(map((characters) => characters.map(toCharacterDomain)));
+      .pipe(map(response => {
+        return {
+          characters: response.results.map(toCharacterDomain),
+          pagingInfo: {
+            count: response.info.count,
+            totalPages: response.info.pages
+          }
+        }
+      }));
   }
 }

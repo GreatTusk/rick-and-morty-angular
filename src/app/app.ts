@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
 import {Home} from './feature/home/home';
 import {MatIconRegistry} from '@angular/material/icon';
+import {NgOptimizedImage} from '@angular/common';
 
 @Component({
   selector: 'app-root',
-  imports: [Home],
+  imports: [Home, NgOptimizedImage],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })

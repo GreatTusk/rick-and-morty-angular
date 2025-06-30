@@ -1,6 +1,3 @@
-<header>
-  <img ngSrc="Rick_and_Morty.svg" width="1000" height="305"/>
-</header>
 <main>
   <app-search-bar (searchFilters)="onSearch($event)"/>
 
@@ -27,4 +24,8 @@
     }
   }
 
+  @if (pagingInfo$ | async; as pagingInfo) {
+    <app-paginator [totalItems]="pagingInfo.count" (pageEvent)="handlePageChange($event)"/>
+  }
+  {{ currentPage() }}
 </main>
